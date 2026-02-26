@@ -15,7 +15,7 @@
 <div class="win-window">
   <div class="win-titlebar">
     <span style="font-size:13px">🍺</span>
-    <span class="win-title-text">CrowdHopper — NYC Nightlife Monitor</span>
+    <span class="win-title-text">CrowdHopper</span>
     <div class="win-btns">
       <div class="win-btn">_</div>
       <div class="win-btn">□</div>
@@ -24,11 +24,35 @@
   </div>
 
   <div class="win-menubar">
-    <div class="menu-item">File</div>
-    <div class="menu-item">View</div>
-    <div class="menu-item">Bars</div>
-    <div class="menu-item">Cameras</div>
-    <div class="menu-item">Help</div>
+    <div class="menu-item" data-menu="file">File
+      <ul class="win-dropdown" id="menuFile">
+        <li data-action="refresh">↻ Refresh All Data</li>
+        <li class="menu-sep"></li>
+        <li data-action="devscreen" style="color:#888">🖥 Dev Screen (dev.html)</li>
+      </ul>
+    </div>
+    <div class="menu-item" data-menu="view">View
+      <ul class="win-dropdown" id="menuView">
+        <li data-action="darkmode" data-toggle="darkmode">☐ Dark Mode</li>
+        <li data-action="compact" data-toggle="compact">☐ Compact View</li>
+      </ul>
+    </div>
+    <div class="menu-item" data-menu="bars">Bars
+      <ul class="win-dropdown" id="menuBars">
+        <li data-action="sort-hood" class="menu-checked">Sort by Neighborhood</li>
+        <li data-action="sort-az">Sort by Name (A–Z)</li>
+        <li data-action="sort-busy">Sort by Busyness</li>
+        <li data-action="sort-dist">Sort by Distance</li>
+        <li data-action="sort-closed">Sort by Open/Closed</li>
+      </ul>
+    </div>
+    <div class="menu-item" data-menu="help">Help
+      <ul class="win-dropdown" id="menuHelp">
+        <li data-action="shortcuts">⌨ Keyboard Shortcuts</li>
+        <li class="menu-sep"></li>
+        <li data-action="about">About CrowdHopper...</li>
+      </ul>
+    </div>
   </div>
 
   <div class="win-toolbar">
@@ -40,7 +64,9 @@
       <option value="murray_hill">Murray Hill</option>
       <option value="kips_bay">Kips Bay</option>
       <option value="greenwich_village">Greenwich Village</option>
+      <option value="east_village">East Village</option>
       <option value="lower_east_side">Lower East Side</option>
+      <option value="financial_district">Financial District</option>
     </select>
     <div class="tb-sep"></div>
     <div class="tb-btn" id="camApiStatus" style="color:#555">⏳ Cameras...</div>
@@ -123,6 +149,58 @@
     </div>
     <div class="cam-close-row">
       <button class="win-dialog-btn" id="btnCamClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── About Dialog ─── -->
+<div class="modal-bg" id="aboutModal">
+  <div class="about-win">
+    <div class="cam-titlebar">
+      <span style="font-size:12px">🍺</span>
+      <span class="cam-title-text">About CrowdHopper</span>
+      <div class="win-btns"><div class="win-btn" id="btnAboutClose">✕</div></div>
+    </div>
+    <div class="about-body">
+      <div class="about-logo">🍺</div>
+      <div class="about-title">CrowdHopper 98</div>
+      <div class="about-ver">NYC Nightlife Monitor v1.0</div>
+      <div class="about-sep"></div>
+      <div class="about-text">
+        Real-time bar busyness powered by BestTime.app<br>
+        Street cameras via NYCDOT<br>
+        Transport via Google Maps · Uber · Lyft
+      </div>
+      <div class="about-sep"></div>
+      <div class="about-text" style="color:#888">
+        21 bars · 7 neighborhoods · Manhattan
+      </div>
+      <div class="cam-close-row" style="padding-top:10px">
+        <button class="win-dialog-btn" id="btnAboutOk">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Shortcuts Dialog ─── -->
+<div class="modal-bg" id="shortcutsModal">
+  <div class="about-win">
+    <div class="cam-titlebar">
+      <span style="font-size:12px">⌨</span>
+      <span class="cam-title-text">Keyboard Shortcuts</span>
+      <div class="win-btns"><div class="win-btn" id="btnShortcutsClose">✕</div></div>
+    </div>
+    <div class="about-body">
+      <table class="shortcuts-table">
+        <tr><td class="sc-key">D</td><td>Toggle Dark Mode</td></tr>
+        <tr><td class="sc-key">C</td><td>Toggle Compact View</td></tr>
+        <tr><td class="sc-key">R</td><td>Refresh All Data</td></tr>
+        <tr><td class="sc-key">1-5</td><td>Sort (Hood / A-Z / Busy / Dist / Open)</td></tr>
+        <tr><td class="sc-key">Esc</td><td>Close modal / menu</td></tr>
+      </table>
+      <div class="cam-close-row" style="padding-top:10px">
+        <button class="win-dialog-btn" id="btnShortcutsOk">OK</button>
+      </div>
     </div>
   </div>
 </div>

@@ -38,8 +38,39 @@ function miniChart(crowd) {
   }).join('');
 }
 
-/** Compute a dynamic busy-tag from crowd data and current hour */
-function getBusyTag(crowd) {
+/** Format an hour (0-23) as "4PM", "11AM", etc. */
+function formatHour(h) {
+  const hr = ((h % 24) + 24) % 24;
+  const ap = hr >= 12 ? 'PM' : 'AM';
+  const h12 = hr % 12 || 12;
+  return h12 + ap;
+}
+
+/**
+ * Check if the current hour is within 1 hour before closing.
+ * Handles overnight spans (e.g. open 17, close 4 → span is 17–4 next day).
+ */
+function isClosingSoon(bar) {
+  if (bar.open == null || bar.close == null) return false;
+  const now = new Date().getHours();
+
+  // Normalize close to be after open
+  let closeN = bar.close;
+  let nowN   = now;
+  if (bar.close <= bar.open) closeN += 24;            // e.g. 4→28
+  if (now < bar.open) nowN += 24;                      // e.g. 2→26
+
+  // Within operating window and 1 hour to close
+  const diff = closeN - nowN;
+  return diff > 0 && diff <= 1;
+}
+
+/**
+ * Compute a dynamic busy-tag from crowd data and (optionally) bar hours.
+ * @param {number[]} crowd  24-element busyness array
+ * @param {object}   [bar]  bar object with open/close fields
+ */
+function getBusyTag(crowd, bar) {
   const idx = btIndex(new Date().getHours());
   const val = crowd[idx] || 0;
 
@@ -47,7 +78,20 @@ function getBusyTag(crowd) {
   const active = crowd.filter(v => v > 0);
   const avg = active.length ? active.reduce((a, b) => a + b, 0) / active.length : 1;
 
-  if (val === 0)         return { text: 'Closed',              cls: 'tag-quiet'   };
+  // ── Closed — show when it opens ──
+  if (val === 0) {
+    if (bar && bar.open != null) {
+      return { text: 'Closed · Opens ' + formatHour(bar.open), cls: 'tag-quiet' };
+    }
+    return { text: 'Closed', cls: 'tag-quiet' };
+  }
+
+  // ── Closing soon — within 1 hour of close ──
+  if (bar && isClosingSoon(bar)) {
+    return { text: 'Closing ' + formatHour(bar.close), cls: 'tag-closing' };
+  }
+
+  // ── Normal busyness tiers ──
   if (val > avg * 1.3)   return { text: 'Busier than usual',   cls: 'tag-busier'  };
   if (val > avg * 0.8)   return { text: 'As busy as usual',    cls: 'tag-usual'   };
   if (val > avg * 0.4)   return { text: 'A little busy',       cls: 'tag-popular' };

@@ -5,9 +5,7 @@
    ═════════════════════════════════════════════ */
 
 const BestTime = {
-  /** Set this to your Cloudflare Worker URL once deployed, e.g.
-      'https://crowdhopper-api.yourname.workers.dev'              */
-  proxyUrl: null,
+  proxyUrl: 'https://crowdhopper-api.billybuteau.workers.dev',
 
   /** Whether the API is available */
   get ready() { return !!this.proxyUrl; },

@@ -4,3 +4,10 @@ compatibility_date = "2024-01-01"
 
 # Set your BestTime API key as a secret:
 #   npx wrangler secret put BESTTIME_API_KEY_PRIVATE
+
+# Visitor tracking KV namespace
+# Create it via CF Dashboard > Workers & Pages > KV > Create namespace
+# Name it "crowdhopper-visitors", then paste the ID below:
+# [[kv_namespaces]]
+# binding = "VISITORS"
+# id = "YOUR_KV_NAMESPACE_ID_HERE"

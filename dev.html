@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrowdHopper — Dev Screen</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
+      font-size: 11px;
+      background: #008080;
+      color: #000;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .dev-win {
+      width: 640px;
+      max-width: 100%;
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      box-shadow: 2px 2px 8px rgba(0,0,0,.4);
+    }
+
+    .dev-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 3px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dev-titlebar .win-btns {
+      margin-left: auto;
+      display: flex;
+      gap: 2px;
+    }
+
+    .dev-titlebar .win-btn {
+      width: 16px; height: 14px;
+      background: #c0c0c0;
+      border: 1px outset #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: bold; color: #000;
+      cursor: pointer; line-height: 1;
+    }
+
+    .dev-body {
+      padding: 10px;
+    }
+
+    .dev-section {
+      margin-bottom: 12px;
+    }
+
+    .dev-section-title {
+      font-weight: bold;
+      font-size: 11px;
+      margin-bottom: 4px;
+      color: #000080;
+      border-bottom: 1px solid #808080;
+      padding-bottom: 2px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px inset #808080;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 22px;
+      font-weight: bold;
+      color: #000080;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .visitor-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px inset #808080;
+    }
+
+    .visitor-table th {
+      background: #000080;
+      color: #fff;
+      font-size: 10px;
+      padding: 4px 6px;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .visitor-table td {
+      padding: 3px 6px;
+      border-bottom: 1px solid #ddd;
+      font-size: 10px;
+    }
+
+    .visitor-table tr:nth-child(even) td {
+      background: #f0f0f8;
+    }
+
+    .visitor-table tr:hover td {
+      background: #e0e0ff;
+    }
+
+    .user-num {
+      font-weight: bold;
+      color: #000080;
+      font-family: monospace;
+    }
+
+    .status-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-dot.ok     { background: #006400; }
+    .status-dot.err    { background: #800000; }
+    .status-dot.wait   { background: #808000; }
+
+    .dev-footer {
+      text-align: center;
+      padding: 8px;
+      font-size: 10px;
+      color: #808080;
+      border-top: 1px solid #808080;
+    }
+
+    .refresh-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .refresh-bar button {
+      font-family: inherit;
+      font-size: 11px;
+      padding: 2px 12px;
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      cursor: pointer;
+    }
+
+    .refresh-bar button:active {
+      border-style: inset;
+    }
+
+    .refresh-bar .auto-lbl {
+      font-size: 10px;
+      color: #555;
+    }
+
+    .no-kv-msg {
+      padding: 16px;
+      text-align: center;
+      color: #800000;
+      font-style: italic;
+    }
+
+    .scroll-box {
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px inset #808080;
+    }
+
+    .live-pulse {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: #00cc00;
+      border-radius: 50%;
+      animation: blink 1.5s infinite;
+      margin-right: 4px;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  </style>
+</head>
+<body>
+
+<div class="dev-win">
+  <div class="dev-titlebar">
+    <span style="font-size:12px">🖥</span>
+    <span>CrowdHopper — Dev Screen</span>
+    <div class="win-btns">
+      <div class="win-btn" onclick="window.close()" title="Close">✕</div>
+    </div>
+  </div>
+
+  <div class="dev-body">
+
+    <!-- Stats Overview -->
+    <div class="dev-section">
+      <div class="dev-section-title">Overview</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="totalVisitors">—</div>
+          <div class="stat-label">Total Visitors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="todayVisitors">—</div>
+          <div class="stat-label">Today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="barCount">21</div>
+          <div class="stat-label">Bars Tracked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="hoodCount">7</div>
+          <div class="stat-label">Neighborhoods</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Status -->
+    <div class="dev-section">
+      <div class="dev-section-title">API Status</div>
+      <div class="status-row">
+        <span class="status-dot wait" id="dotBT"></span>
+        <span>BestTime API — <span id="btStatus">Checking...</span></span>
+      </div>
+      <div class="status-row">
+        <span class="status-dot wait" id="dotKV"></span>
+        <span>Visitor KV — <span id="kvStatus">Checking...</span></span>
+      </div>
+      <div class="status-row">
+        <span class="status-dot wait" id="dotCam"></span>
+        <span>NYCDOT Cameras — <span id="camStatus">Checking...</span></span>
+      </div>
+    </div>
+
+    <!-- Visitor Log -->
+    <div class="dev-section">
+      <div class="dev-section-title">
+        <span class="live-pulse"></span>Visitor Log
+      </div>
+      <div class="refresh-bar">
+        <button onclick="fetchVisitors()">↻ Refresh</button>
+        <span class="auto-lbl">Auto-refreshes every 10s</span>
+      </div>
+      <div id="visitorContent">
+        <div class="no-kv-msg">Loading visitor data...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dev-footer">
+    CrowdHopper Dev Screen · <span id="devClock">--:-- --</span> · <span id="lastRefresh">Never refreshed</span>
+  </div>
+</div>
+
+<script>
+  const API = 'https://crowdhopper-api.billybuteau.workers.dev';
+
+  /* ── Clock ── */
+  function tickDev() {
+    const n = new Date();
+    let h = n.getHours(), m = String(n.getMinutes()).padStart(2, '0');
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('devClock').textContent = h + ':' + m + ' ' + ap;
+  }
+  setInterval(tickDev, 1000);
+  tickDev();
+
+  /* ── Format timestamp ── */
+  function fmtTime(ts) {
+    const d = new Date(ts);
+    const mo = d.toLocaleString('en-US', { month: 'short' });
+    const day = d.getDate();
+    let h = d.getHours(), m = String(d.getMinutes()).padStart(2, '0');
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${mo} ${day}, ${h}:${m} ${ap}`;
+  }
+
+  /* ── Check APIs ── */
+  async function checkAPIs() {
+    // BestTime proxy
+    try {
+      const res = await fetch(API + '/api/forecast?venue_id=test', { signal: AbortSignal.timeout(5000) });
+      const data = await res.json();
+      document.getElementById('dotBT').className = 'status-dot ok';
+      document.getElementById('btStatus').textContent = 'Online';
+    } catch {
+      document.getElementById('dotBT').className = 'status-dot err';
+      document.getElementById('btStatus').textContent = 'Offline';
+    }
+
+    // NYCDOT
+    try {
+      const res = await fetch('https://webcams.nyctmc.org/api/cameras', { signal: AbortSignal.timeout(5000) });
+      if (res.ok) {
+        const cams = await res.json();
+        document.getElementById('dotCam').className = 'status-dot ok';
+        document.getElementById('camStatus').textContent = 'Online — ' + cams.length + ' cameras';
+      } else throw 0;
+    } catch {
+      document.getElementById('dotCam').className = 'status-dot err';
+      document.getElementById('camStatus').textContent = 'Offline / CORS blocked';
+    }
+  }
+
+  /* ── Fetch visitors ── */
+  async function fetchVisitors() {
+    try {
+      const res = await fetch(API + '/api/visits', { signal: AbortSignal.timeout(5000) });
+      const data = await res.json();
+
+      if (data.error) {
+        document.getElementById('dotKV').className = 'status-dot err';
+        document.getElementById('kvStatus').textContent = data.error;
+        document.getElementById('visitorContent').innerHTML =
+          '<div class="no-kv-msg">KV namespace not configured.<br>See worker/wrangler.toml for setup instructions.</div>';
+        return;
+      }
+
+      document.getElementById('dotKV').className = 'status-dot ok';
+      document.getElementById('kvStatus').textContent = 'Online — ' + data.total + ' total entries';
+      document.getElementById('totalVisitors').textContent = data.total;
+
+      // Count today's visitors
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayTs = todayStart.getTime();
+      const todayCount = data.recent.filter(v => v.ts >= todayTs).length;
+      document.getElementById('todayVisitors').textContent = todayCount;
+
+      // Build table (most recent first)
+      const sorted = [...data.recent].reverse();
+      if (sorted.length === 0) {
+        document.getElementById('visitorContent').innerHTML =
+          '<div class="no-kv-msg">No visitors yet.</div>';
+        return;
+      }
+
+      let html = '<div class="scroll-box"><table class="visitor-table">';
+      html += '<tr><th>User #</th><th>Entered</th><th>Browser</th><th>Platform</th></tr>';
+      sorted.forEach(v => {
+        html += `<tr>
+          <td><span class="user-num">#${v.num}</span></td>
+          <td>${fmtTime(v.ts)}</td>
+          <td>${v.browser || '?'}</td>
+          <td>${v.platform || '?'}</td>
+        </tr>`;
+      });
+      html += '</table></div>';
+      document.getElementById('visitorContent').innerHTML = html;
+
+      document.getElementById('lastRefresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+    } catch (err) {
+      document.getElementById('dotKV').className = 'status-dot err';
+      document.getElementById('kvStatus').textContent = 'Error: ' + err.message;
+      document.getElementById('visitorContent').innerHTML =
+        '<div class="no-kv-msg">Failed to fetch visitor data.</div>';
+    }
+  }
+
+  /* ── Init ── */
+  checkAPIs();
+  fetchVisitors();
+  setInterval(fetchVisitors, 10000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="CrowdHopper — Real-time NYC bar busyness tracker with NYCDOT street cameras">
+  <title>CrowdHopper</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ─── Main Window ─── -->
+<div class="win-window">
+  <div class="win-titlebar">
+    <span style="font-size:13px">🍺</span>
+    <span class="win-title-text">CrowdHopper — NYC Nightlife Monitor</span>
+    <div class="win-btns">
+      <div class="win-btn">_</div>
+      <div class="win-btn">□</div>
+      <div class="win-btn">✕</div>
+    </div>
+  </div>
+
+  <div class="win-menubar">
+    <div class="menu-item">File</div>
+    <div class="menu-item">View</div>
+    <div class="menu-item">Bars</div>
+    <div class="menu-item">Cameras</div>
+    <div class="menu-item">Help</div>
+  </div>
+
+  <div class="win-toolbar">
+    <div class="tb-btn" id="btnRefresh">↻ Refresh</div>
+    <div class="tb-sep"></div>
+    <select id="hoodFilter" class="win-select">
+      <option value="all">All Neighborhoods</option>
+      <option value="west_village">West Village</option>
+      <option value="murray_hill">Murray Hill</option>
+      <option value="kips_bay">Kips Bay</option>
+      <option value="greenwich_village">Greenwich Village</option>
+      <option value="lower_east_side">Lower East Side</option>
+    </select>
+    <div class="tb-sep"></div>
+    <div class="tb-btn" id="camApiStatus" style="color:#555">⏳ Cameras...</div>
+    <div class="tb-sep"></div>
+    <div class="tb-btn" style="color:#555;font-size:10px" id="tbTime">–:– –M</div>
+  </div>
+
+  <div class="addr-bar">
+    <span class="addr-label">Location:</span>
+    <div class="addr-box">nyc://crowdhopper/tonight</div>
+  </div>
+
+  <div class="win-content">
+    <div class="list-headers">
+      <div class="col-head" style="text-align:left">Name / Address</div>
+      <div class="col-head">Busyness</div>
+      <div class="col-head" title="Street Camera">📷</div>
+      <div class="col-head" title="Get There">🚗</div>
+    </div>
+    <div id="barList"></div>
+  </div>
+
+  <div class="win-statusbar">
+    <div class="sb-panel" style="flex:1" id="statusMsg">
+      <span class="live-dot"></span>Loading...
+    </div>
+    <div class="sb-panel" style="flex:0 0 auto" id="statusCount">–</div>
+  </div>
+</div>
+
+<!-- ─── Taskbar ─── -->
+<div class="taskbar">
+  <button class="start-btn">⊞ Start</button>
+  <div class="tb-task-sep"></div>
+  <div class="tb-program">🍺 CrowdHopper</div>
+  <div style="flex:1"></div>
+  <div class="tb-clock" id="clock">00:00</div>
+</div>
+
+<!-- ─── Transport Menu ─── -->
+<div class="transport-menu" id="transportMenu">
+  <div class="tmenu-titlebar">
+    <span id="tmenuBarName">Get there</span>
+    <div class="tmenu-x" id="tmenuClose">✕</div>
+  </div>
+  <a class="tmenu-item" id="tmGmaps" href="#" target="_blank" rel="noopener">
+    <span class="tmenu-icon">🗺️</span>
+    <span><div class="tmenu-label">Google Maps</div><div class="tmenu-sub">Transit · Walk · Bike</div></span>
+  </a>
+  <a class="tmenu-item" id="tmUber" href="#">
+    <span class="tmenu-icon" style="font-weight:900;font-family:sans-serif;font-size:15px;color:#000">U</span>
+    <span><div class="tmenu-label">Uber</div><div class="tmenu-sub">Open Uber app</div></span>
+  </a>
+  <a class="tmenu-item" id="tmLyft" href="#">
+    <span class="tmenu-icon" style="font-weight:900;font-family:sans-serif;font-size:15px;color:#ff00bf">L</span>
+    <span><div class="tmenu-label">Lyft</div><div class="tmenu-sub">Open Lyft app</div></span>
+  </a>
+</div>
+
+<!-- ─── Camera Modal ─── -->
+<div class="modal-bg" id="camModal">
+  <div class="cam-win">
+    <div class="cam-titlebar">
+      <span style="font-size:12px">📷</span>
+      <span class="cam-title-text" id="modTitle">Street Camera</span>
+      <div class="win-btns"><div class="win-btn">✕</div></div>
+    </div>
+    <div class="cam-viewport">
+      <div class="cam-loading" id="camLoader">
+        <div class="win-spinner"></div>
+        <span>Connecting to NYCDOT feed...</span>
+      </div>
+      <img class="cam-img" id="camImg" src="" alt="NYCDOT camera feed">
+    </div>
+    <div class="cam-info-row">
+      <span id="modDist" style="font-size:10px">📡 —</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:10px">
+        <span class="live-dot"></span>LIVE · NYCDOT · 5s refresh
+      </span>
+    </div>
+    <div class="cam-close-row">
+      <button class="win-dialog-btn" id="btnCamClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Scripts (order matters) ─── -->
+<script src="js/bars.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/transport.js"></script>
+<script src="js/besttime.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

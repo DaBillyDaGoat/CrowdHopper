@@ -246,9 +246,9 @@ document.getElementById('barList').addEventListener('click', (e) => {
   }
 });
 
-// Close transport menu on outside click
+// Close transport dropdown on outside click
 document.addEventListener('click', (e) => {
-  if (menuOpen && !e.target.closest('#transportMenu') && !e.target.closest('[data-action="transport"]')) closeMenu();
+  if (menuOpen && !e.target.closest('.transport-dropdown') && !e.target.closest('[data-action="transport"]')) closeMenu();
 });
 
 // Neighborhood filter
@@ -270,8 +270,7 @@ document.getElementById('camImg').addEventListener('error', onCamErr);
 document.getElementById('btnCamClose').addEventListener('click', closeCam);
 document.querySelector('.cam-win .win-btn').addEventListener('click', closeCam);
 
-// Transport menu close button
-document.getElementById('tmenuClose').addEventListener('click', closeMenu);
+// Transport dropdown close is handled inline by transport.js
 
 /* ── Menu bar ── */
 
